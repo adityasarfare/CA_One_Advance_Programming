@@ -1,0 +1,42 @@
+StaffID, LastName, FirstName, RegHours, HourlyRate, OTMultiple, TaxCredit, StandardBand
+
+jg= Employee(12345,'Green','Joe', 37, 16, 1.5, 72, 710)
+
+Create a method computePayment in class Employee which takes HoursWorked and date as input, 
+and returns a payment information dictionary as follows: (if jg is an Employee object for worker 
+Joe Green)
+
+We will assume a standard rate of 20% and a higher rate of 40%, and that PRSI at 4% is not 
+subject to allowances. (we will ignore USC etc.)
+
+jg.computePayment(42 '31/10/2021')
+
+{'name': 'Joe Green', 'Date':'31/10/2021', 'Regular Hours Worked':37,'Overtime Hours Worked':5,
+'Regular Rate':16,'Overtime Rate':24, 'Regular Pay':592,'Overtime Pay':120,'Gross Pay':712, 
+'Standard Rate Pay':710,'Higher Rate Pay':2, 'Standard Tax':142,'Higher Tax':0.8,'Total Tax':142.8,
+'Tax Credit':72, 'Net Tax':70.8, 'PRSI': 28.48,'Net Deductions':99.28, 'Net Pay': 612.72}
+
+Formula :- 
+name: 'Joe Green'
+Date: '31/10/2021'
+Regular Hours Worked = 37
+Overtime Hours Worked =  HoursWorked - Regular Hours Worked: 42-37 = 5
+Regular Rate = 16
+Overtime Rate = Regular Rate * OTMultiple: 16 * 1.5 = 24
+Regular Pay = Regular Hours Worked * Regular Rate: 37 * 16 = 592
+Overtime Pay = Overtime Hours Worked * Overtime Rate: 5 * 24 = 120
+Gross Pay = Regular Pay + Overtime Pay: 592 + 120 = 712
+Standard Rate Pay = 710
+Higher Rate Pay = Gross Pay - Standard Rate Pay: 712-710 = 2
+Standard Tax = Standard Rate Pay * (20/100)= 142
+Higher Tax = Higher Rate Pay * (40/100) = 0.8 
+Total Tax = Standard Tax + Higher Tax = 142 + 0.8 = 142.8
+Tax Credit = 72
+Net Tax = Total Tax - Tax Credit: 142.8-72 = 70.8
+PRSI = Gross Pay * (4/100) = 28.48
+Net Deductions = Net Tax + PRSI = 70.8 + 28.48 = 99.28
+Net Pay = Gross Pay - Net Deductions = 712 - 99.28 = 612.72
+
+
+
+

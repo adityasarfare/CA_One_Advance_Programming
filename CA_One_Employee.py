@@ -3,6 +3,9 @@ import unittest
 
 class CA_One_Employee:
     def __init__(self,StaffID,LastName, FirstName, RegHours, HourlyRate, OTMultiple, TaxCredit, StandardBand):
+        if (RegHours < 0 or StaffID < 0 or OTMultiple < 0 or HourlyRate < 0 or TaxCredit < 0 or StandardBand < 0):
+            raise ValueError("This values cannot be negative.")
+
         self.__StaffID = StaffID
         self.__LastName = LastName
         self.__FirstName = FirstName
@@ -15,12 +18,14 @@ class CA_One_Employee:
     def computePayment(self, HoursWorked, date):
 
         if (self.__RegHours > HoursWorked):
-            raise ValueError("Regular Hours Worked cannot exceed hours worked")
+            raise ValueError("Regular Hours Worked cannot exceed worked hours")
         else:
             OverTimeWorked = HoursWorked - self.__RegHours
+            print(OverTimeWorked)
+
         # if(OverTimeWorked < 0):
         #     raise ValueError('OverTimeWorked cannot be negative!')
-        print(OverTimeWorked)
+
 
         OverTimeRate = self.__HourlyRate*self.__OTMultiple
 
@@ -105,9 +110,65 @@ class CA_One_Employee:
 
 class testCA_One_Employee(unittest.TestCase):
 
+    # Testing class thoroughly
+    def testNegativeStaffID(self):
+        emp = CA_One_Employee(-12345, 'Green', 'Joe', 37, 16, 1.5, 72, 710)
+        self.assertRaises(ValueError)
+
+    def testNegativeRegHours(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', -37, 16, 1.5, 72, 710)
+        self.assertRaises(ValueError)
+
+    def testNegativeHourlyRate(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 37, -16, 1.5, 72, 710)
+        self.assertRaises(ValueError)
+
+    def testNegativeOTMultiple(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 37, 16, -1.5, 72, 710)
+        self.assertRaises(ValueError)
+
+    def testNegativeTaxCredit(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 37, 16, 1.5, -72, 710)
+        self.assertRaises(ValueError)
+
+    def testNegativeStandardBand(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 37, 16, 1.5, 72, -710)
+        self.assertRaises(ValueError)
+
+
     # Net pay cannot exceed gross pay
     def testNetPayCannotExceedGrosspay(self):
-        e = CA_One_Employee(12345,'Green','Joe', 37, 16, 1.5, 72, 710)
-        cal = e.computePayment(1, '31/10/2021')
+        emp = CA_One_Employee(12345,'Green','Joe', 37, 16, 1.5, 72, 710)
+        cal = emp.computePayment(42, '31/10/2021')
         self.assertLessEqual(cal['Net Pay'], cal['Gross Pay'])
 
+        # Overtime pay cannot be negative.
+
+    def testOverTimePayCannotBeNegative(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 37, -16, 1.5, 72, 710)
+        pi = emp.computePayment(42, '31/10/2021')
+        self.assertLessEqual(0, pi["Overtime Pay"])
+
+        # Regular Hours cannot be greater than the Hours worked
+
+    def testRegHoursNotGreaterThanHoursWorked(self):
+        emp = CA_One_Employee(12345, 'Green', 'Joe', 73, 16, 1.5, 72, 710)
+        pi = emp.computePayment(42, '31/10/2021')
+        self.assertLessEqual(pi["Regular Hours Worked"], pi["Hours Worked"])
+
+        # Higher Tax cannot be negative.
+
+    def testHigherTaxCannotBeNegative(self):
+        e = CA_One_Employee(12345, 'Green', 'Joe', 37, 16, 1.5, 72, 715)
+        pi = e.computePayment(42, '31/10/2021')
+        self.assertLessEqual(0, pi["Higher Tax"])
+
+        # Net Pay cannot be negative
+
+    def testNetPayCannotBeNegative(self):
+        e = CA_One_Employee(12345, 'Green', 'Joe', 37, 16, 1.5, 72, 710)
+        calc = e.computePayment(42, '31/10/2021')
+        self.assertLessEqual(calc["Net Pay"], 0)
+
+
+unittest.main(argv=['ignored'],exit=False)
